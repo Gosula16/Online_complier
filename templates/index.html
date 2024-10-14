@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Code Compiler</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+
+<h2>Online Code Compiler</h2>
+
+<label for="language">Select Language:</label>
+<select id="language">
+    <option value="Python">Python</option>
+    <option value="C++">C++</option>
+    <option value="Java">Java</option>
+</select>
+
+<br><br>
+
+<textarea id="code_input" rows="10" cols="50" placeholder="Write your code here..."></textarea>
+<br>
+
+<button id="run_btn">Run Code</button>
+<button id="ai_suggestion_btn">Get AI Suggestion</button>
+<button id="download_btn">Download Code</button>
+
+<h3>Output:</h3>
+<pre id="output"></pre>
+
+<script>
+    // Run code button
+    $('#run_btn').click(function() {
+        const code = $('#code_input').val();
+        const language = $('#language').val();
+
+        $.ajax({
+            url: '/run_code',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ code, language }),
+            success: function(response) {
+                $('#output').text(response.output);
+            }
+        });
+    });
+
+    // AI suggestion button
+    $('#ai_suggestion_btn').click(function() {
+        const prompt = $('#code_input').val();
+
+        $.ajax({
+            url: '/get_ai_suggestion',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ prompt }),
+            success: function(response) {
+                $('#code_input').val(response.suggestion);
+            }
+        });
+    });
+
+    // Download code button
+    $('#download_btn').click(function() {
+        const code = $('#code_input').val();
+        const language = $('#language').val();
+
+        $.ajax({
+            url: '/download_code',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ code, language }),
+            success: function(response) {
+                const link = document.createElement('a');
+                link.href = response;
+                link.download = response.split('/').pop();
+                link.click();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
