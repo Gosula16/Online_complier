@@ -6,8 +6,9 @@ import os
 import black
 
 # OpenAI API key
-openai.api_key = "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"
-
+import os
+api_key = os.getenv("OPENAI_API_KEY")
+#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
 # Supported languages
 languages = {
     "Python": "py",
